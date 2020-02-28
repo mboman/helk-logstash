@@ -1,2 +1,4 @@
----
-# vars file for helk-logstash
+xpack.monitoring.enabled: true
+xpack.monitoring.elasticsearch.hosts: http://helk-elasticsearch:9200
+HELK_LOGSTASH_JAVA_OPTS: -XX:-UseConcMarkSweepGC -XX:-UseCMSInitiatingOccupancyOnly -XX:+UseG1GC
+plugins_time_file: "/usr/share/logstash/helk-plugins-updated-timestamp.txt"

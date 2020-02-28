@@ -1,2 +1,69 @@
 ---
-# tasks file for helk-logstash
+
+- name: Add apt-key package
+  apt:
+    name: add-apt-key
+    state: present
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+- name: Add Elastic APT Key
+  apt_key:
+    url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    state: present
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+- name: Add Elastic APT repository
+  apt_repository:
+    repo: deb https://artifacts.elastic.co/packages/7.x/apt stable main
+    state: present
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+- name: Install dependencies
+  apt:
+    name: default-jre
+    state: present
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+- name: Installing logstash
+  apt:
+    name: logstash
+    state: present
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+- name: Copy configuration
+  copy:
+    src: config
+    dest: /usr/share/logstash/config
+    owner: logstash
+    group: logstash
+
+- name: Copy plugins for offline installation
+  copy:
+    src: "{{ item }}"
+    dest: /usr/share/logstash/plugins/
+    owner: logstash
+    group: logstash
+  loop:
+    - plugins/helk-offline-logstash-codec_and_filter_plugins.zip
+    - plugins/helk-offline-logstash-input_and_output-plugins.zip
+
+- name: Updating plugins
+  command:
+    cmd: /usr/share/logstash/bin/logstash-plugin update
+
+#- name: Installing plugins
+#  command:
+#    cmd: /usr/share/logstash/bin/logstash-plugin install "{{ item }}"
+#  loop:
+#    - file:///usr/share/logstash/plugins/helk-offline-logstash-codec_and_filter_plugins.zip
+#    - file:///usr/share/logstash/plugins/helk-offline-logstash-input_and_output-plugins.zip
+
+#- name: Cleaning up
+#  file:
+#    path: "{{ item }}"
+#    recurse: yes
+#    state: absent
+#  loop:
+#    - /usr/share/logstash/plugins/helk-offline-logstash-codec_and_filter_plugins.zip
+#    - /usr/share/logstash/plugins/helk-offline-logstash-input_and_output-plugins.zip
+#    - /usr/share/logstash/pipeline/logstash.conf
