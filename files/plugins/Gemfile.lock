@@ -531,7 +531,7 @@ GEM
     multipart-post (2.1.1)
     murmurhash3 (0.1.6-java)
     mustache (0.99.8)
-    nokogiri (1.10.7-java)
+    nokogiri (1.10.8-java)
     numerizer (0.1.1)
     octokit (4.14.0)
       sawyer (~> 0.8.0, >= 0.5.3)
